@@ -1,24 +1,26 @@
 import { useEffect, useState } from "react"
 
-import image from '../../asserts/fronts/png_96_dpi/clubs_2.png'
+// import image from '../../asserts/fronts/png_96_dpi/clubs_2.png'
+// import image2 from '../../asserts/backs/blue2.svg'
+// import bgImage from '../../asserts/IMG_20240329_170516_335.jpg'
 const AIGame=()=>{
     const [turn,setTurn]=useState('')
-    const [droppedCards,setDroppedCards]=useState({})
+    const [notDroppedCards,setNotDroppedCards]=useState({})
     const [carpetCards,setCarpetCards]=useState([false,false,false,false])
     const [hokm,setHokm]=useState('')
     const [ruler,setRuler]=useState()
     const [cardDeck,setCardDeck]=useState(
         {"D":[
-            1,2,3,4,5,6,7,8,9,10,11,12
+            1,2,3,4,5,6,7,8,9,10,11,12,13
         ],
         "C":[
-            1,2,3,4,5,6,7,8,9,10,11,12
+            1,2,3,4,5,6,7,8,9,10,11,12,13
         ],
         "S":[
-            1,2,3,4,5,6,7,8,9,10,11,12
+            1,2,3,4,5,6,7,8,9,10,11,12,13
         ],
         "H":[
-            1,2,3,4,5,6,7,8,9,10,11,12
+            1,2,3,4,5,6,7,8,9,10,11,12,13
         ]
         }
     )
@@ -26,6 +28,7 @@ const AIGame=()=>{
         {'player1':{
             cards:{
                 "D":[
+              
             
                 ],
                 "C":[
@@ -45,6 +48,7 @@ const AIGame=()=>{
         'player2':{
             cards:{
                 "D":[
+               
             
                 ],
                 "C":[
@@ -103,17 +107,49 @@ const AIGame=()=>{
     )
 
     useEffect(()=>{
+        const rulerplayer='player'+(Math.floor(Math.random() * (4) ) + 1)
+        
+        
+        
+
        
 
     },[])
     useEffect(()=>{
+        
 
     },[turn])
+    const deckOfcards=(Isenemy,player)=>{
+        let count=13
+        return Object.keys(player.cards).map((suit)=>{
+                     
+            return (player.cards[suit]?.map((card)=>{
+                count-=1
+    
+                return(
+                    <div style={{zIndex:count}} className="  w-5r ">
+                        <img className="w-100" src={Isenemy?'/backs/blue2.svg':('/fronts/'+suit+card+'.svg')}></img>
+    
+                    </div>
+    
+                    
+                )
+            }))
+    
+        })
+        
+    }
     return(
-        <div style={{backgroundImage:{image}}} className="container-fluid h-100vh bg-success d-flex flex-column justify-content-between">
+        <div  className=" h-100vh  d-flex flex-column justify-content-between position-relaive">
+            <img className="position-absolute top-0 w-100 h-100 z-index--1" src='/IMG_20240329_170516_335.jpg'></img>
             <div className="h-25 d-flex justify-content-center align-items-center">
-                <div className="">
-                    player1
+                <div dir="rtl" className="d-flex position-relative ">
+                    {deckOfcards(true,players.player3)}
+
+                    {/* <div style={{marginRight:'-50px',zIndex:12}} className=" w-5r  ">
+                        <img className="w-100" src={image2}></img>
+
+                    </div> */}
                     
 
                 </div>
@@ -122,72 +158,95 @@ const AIGame=()=>{
             </div>
             <div className="flex-grow-1 d-flex justify-content-between">
                  <div className="d-flex align-items-center">
-                    <div>
-                        player4
+                      <div dir="rtl" className="d-flex rotate-90">
 
-                    </div>
+                            {deckOfcards(true,players.player4)}
+                            {/* <div style={{zIndex:13}} className="  w-5r ">
+                                <img className="w-100  " src={image2}></img>
+
+                            </div>
+                            <div style={{marginRight:'-50px',zIndex:12}} className=" w-5r  ">
+                                <img className="w-100" src={image2}></img>
+
+                            </div>
+                            <div style={{marginRight:'-50px',zIndex:11}} className=" w-5r  ">
+                                <img className="w-100" src={image2}></img>
+
+                            </div> */}
+                            {/* <div style={{marginRight:'-150px',zIndex:10}} className=" w-5r  ">
+                                <img className="w-100" src={image}></img>
+
+                            </div> */}
+                        </div>
             
                 </div>
                 <div className="d-flex flex-column justify-content-center">
                     <div className="d-flex justify-content-center">
-                        <span> card1</span>
+                        <div className="w-5r ">
+                            <img className="w-100" src={'/fronts/C1.svg'}></img>
+
+                        </div>
 
                     </div>
-                    <div className="justify-content-between justify-content-center">
-                        <span>card4</span>
-                        <span>card2</span>
+                    <div className="d-flex justify-content-between justify-content-center w-15r">
+                        <div className="w-5r  ">
+                            <img className="w-100 rotate-90  " src={'/fronts/C1.svg'}></img>
+
+                        </div>
+                        <div className="w-5r  ">
+                            <img className="w-100 rotate-90 " src={'/fronts/C1.svg'}></img>
+
+                        </div>
 
                     </div>
                     <div className="d-flex justify-content-center">
-                        <span> card3</span>
+                        <div className="w-5r  ">
+                            <img className="w-100 " src={'/fronts/C1.svg'}></img>
+
+                        </div>
 
                     </div>
 
                 </div>
                 <div className="d-flex align-items-center">
-                    <div>
-                        player2
+                        <div dir="rtl" className="d-flex rotate-90">
+                            {deckOfcards(true,players.player2)}
+                        
+                            {/* <div style={{zIndex:13}} className="  w-5r ">
+                                <img className="w-100  " src={image2}></img>
 
-                    </div>
+                            </div>
+                            <div style={{marginRight:'-50px',zIndex:12}} className=" w-5r  ">
+                                <img className="w-100" src={image2}></img>
+
+                            </div>
+                            <div style={{marginRight:'-50px',zIndex:11}} className=" w-5r  ">
+                                <img className="w-100" src={image2}></img>
+
+                            </div>
+                            <div style={{marginRight:'-50px',zIndex:10}} className=" w-5r  ">
+                                <img className="w-100" src={image2}></img>
+
+                            </div> */}
+                        </div>
+
+                 
             
                 </div>
                 
             </div>
             <div className="h-25 d-flex justify-content-center align-items-center">
-                <div className="d-flex position-relative">
-                    <div className="w-5r padding-b-120p">
-                        card1
+                <div dir="rtl" className="d-flex position-relative ">
 
-                    </div>
-                    
-                    <div style={{right:'10px',zIndex:13}} className="position-absolute w-100  ">
+                    {deckOfcards(false,players.player1)}
+                    {/* <div style={{zIndex:13}} className="  w-5r ">
                         <img className="w-100" src={image}></img>
 
                     </div>
-                    <div style={{right:'20px',zIndex:12}} className="position-absolute w-100  ">
-                    <img className="w-100" src={image}></img>
-
-                    </div>
-                    <div style={{right:'30px',zIndex:11}} className="position-absolute w-100 ">
+                    <div style={{marginRight:'-50px',zIndex:12}} className=" w-5r  ">
                         <img className="w-100" src={image}></img>
 
-                    </div>
-                    <div style={{right:'40px',zIndex:10}} className="position-absolute w-100 ">
-                        <img className="w-100" src={image}></img>
-
-                    </div>
-                    <div style={{right:'50px',zIndex:9}} className="position-absolute w-100 ">
-                        <img className="w-100" src={image}></img>
-
-                    </div>
-                    <div style={{right:'60px',zIndex:8}} className="position-absolute w-100 ">
-                        <img className="w-100" src={image}></img>
-
-                    </div>
-                    <div style={{right:'70px',zIndex:7}} className="position-absolute w-100 ">
-                        <img className="w-100" src={image}></img>
-
-                    </div>
+                    </div> */}
 
 
 
