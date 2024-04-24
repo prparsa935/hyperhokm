@@ -183,6 +183,9 @@
 .bd-filter-40px{
     backdrop-filter: blur(40px);
 }
+.fl-blur-8px{
+    filter: blur(8px);
+}
 /* displays */
 .d-flex{
     display: flex;

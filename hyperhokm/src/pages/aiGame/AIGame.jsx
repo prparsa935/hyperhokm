@@ -1,27 +1,38 @@
 import { useEffect, useState } from "react"
+import useDidMountEffect from "../../utils/useDidMountEffect "
+import { aiMove, getCarpetCardPoints, hokmSetter } from "../../utils/hokmAi"
 
 // import image from '../../asserts/fronts/png_96_dpi/clubs_2.png'
 // import image2 from '../../asserts/backs/blue2.svg'
 // import bgImage from '../../asserts/IMG_20240329_170516_335.jpg'
 const AIGame=()=>{
     const [turn,setTurn]=useState('')
+    const [turnCount,setTurnCount]=useState(1)
     const [notDroppedCards,setNotDroppedCards]=useState({})
+    const [availableSuits,setAvailableSuits]=useState(['D','C',"S","H"])
     const [carpetCards,setCarpetCards]=useState([false,false,false,false])
-    const [hokm,setHokm]=useState('')
+    const [firstDrop,setFirstDrop]=useState({})
+    const [lastPlay,setLastPlay]=useState({})
+    const [hokm,setHokm]=useState(null)
     const [ruler,setRuler]=useState()
-    const cardDeck=
-        {"D":[
-            1,2,3,4,5,6,7,8,9,10,11,12,13],
-        "C":[
-            1,2,3,4,5,6,7,8,9,10,11,12,13
-        ],
-        "S":[
-            1,2,3,4,5,6,7
-        ],
-        "H":[
-            1,2,3,4,5,6,7,8,9,10,11,12,13
-        ]
-    }
+
+    const [suitsPlayersDontHave,setSuitsPlayersDontHave]=useState([
+        [],[],[],[]
+    ])
+
+    const [cardDeck,setCardDeck]=useState({"D":[
+        1,2,3,4,5,6,7,8,9,10,11,12,13],
+    "C":[
+        1,2,3,4,5,6,7,8,9,10,11,12,13
+    ],
+    "S":[
+        1,2,3,4,5,6,7,8,9,10,11,12,13
+    ],
+    "H":[
+        1,2,3,4,5,6,7,8,9,10,11,12,13
+    ]
+}  )
+
 
     const [players,setPlayers]=useState(
         {'player1':{
@@ -40,8 +51,10 @@ const AIGame=()=>{
                 
                 ]
             },
-            winGameCount:0,
-            stackWins:0
+            'enemies':[2,4],
+            'teamMate':3,
+            'winGameCount':0,
+            'stackWins':0
             
         },
         'player2':{
@@ -60,8 +73,10 @@ const AIGame=()=>{
                 
                 ]
             },
-            winGameCount:0,
-            stackWins:0
+            'enemies':[1,3],
+            'teamMate':4,
+            'winGameCount':0,
+            'stackWins':0
             
         },
         'player3':{
@@ -79,8 +94,10 @@ const AIGame=()=>{
                 
                 ]
             },
-            winGameCount:0,
-            stackWins:0
+            'enemies':[2,4],
+            'teamMate':1,
+            'winGameCount':0,
+            'stackWins':0
             
         },
         'player4':{
@@ -98,38 +115,335 @@ const AIGame=()=>{
                 
                 ]
             },
-            winGameCount:0,
-            stackWins:0
+            'enemies':[1,3],
+            'teamMate':2,
+            'winGameCount':0,
+            'stackWins':0
             
         }}
 
     )
-
-    useEffect(()=>{
+    // useEffect(()=>{
+    //     set
         
-        const rulerplayer='player'+(Math.floor(Math.random() * (4) ) + 1)
-        let localCardDeck= {"D":[
-            1,2,3,4,5,6,7,8,9,10,11,12,13],
-        "C":[
-            1,2,3,4,5,6,7,8,9,10,11,12,13
-        ],
-        "S":[
-            1,2,3,4,5,6,7,8,9,10,11,12,13
-        ],
-        "H":[
-            1,2,3,4,5,6,7,8,9,10,11,12,13
-        ]
-    }   
+    //     // const d=[{age:23},{age:33},{age:55},false]
+    //     // console.log(d.reduce((prev,curr)=>{
+    //     //     if(prev===false){
+    //     //         return curr
+    //     //     }
+    //     //     if(curr===false){
+    //     //         return prev
+    //     //     }
+    //     //     return prev.age>curr.age?prev:curr}))
+        
+      
+
+    // },[hokm])
+    useEffect(()=>{
+        const rulerplayer=(Math.floor(Math.random() * (4) ) + 1)
+        setPlayersCards(20)
+        setNotDroppedCards(cardDeck)
+        setRuler(rulerplayer)
+        setFirstDrop({player:rulerplayer})
+
+    },[])
+    useDidMountEffect(()=>{
+
+        if(ruler!==2){
+            
+            setHokm(hokmSetter(players['player'+ruler].cards))
+
+
+        }
+
+    },[ruler])
+    useDidMountEffect(()=>{
+        setPlayersCards(32)
+        setTurn(ruler)
+       
+        
+    //     let localCardDeck= {"D":[
+    //         1,2,3,4,5,6,7,8,9,10,11,12,13],
+    //     "C":[
+    //         1,2,3,4,5,6,7,8,9,10,11,12,13
+    //     ],
+    //     "S":[
+    //         1,2,3,4,5,6,7,8,9,10,11,12,13
+    //     ],
+    //     "H":[
+    //         1,2,3,4,5,6,7,8,9,10,11,12,13
+    //     ]
+    // }   
     
       
-        let availableSuits=Object.keys(localCardDeck)
+    //     let availableSuits=Object.keys(localCardDeck)
+        
+    //     let playerTurn=1
+    
+    //     let localPlayers=JSON.parse(JSON.stringify(players));
+
+    //     for (let i=1;i<53;i++) {
+       
+    //         let randomSuit=availableSuits[Math.floor(Math.random() * (availableSuits.length) ) ]
+           
+  
+    //         let chosenSuit=localCardDeck[randomSuit]
+
+    //         let chosenCardIndex=Math.floor(Math.random() * (chosenSuit.length) )
+    //         let chosencard=chosenSuit[chosenCardIndex]
+       
+            
+    //         localPlayers['player'+playerTurn]['cards'][randomSuit].push(chosencard)
+
+    //         localCardDeck[randomSuit].splice(chosenCardIndex,1)
+     
+    //         if(localCardDeck[randomSuit].length===0){
+                
+    //             availableSuits.splice(availableSuits.indexOf(randomSuit),1)
+    //         }
+    //         if(playerTurn===4){
+    //             playerTurn=1
+        
+                
+    //         }
+    //         else{
+    //             playerTurn+=1
+           
+    //         }
+
+
+          
+           
+
+            
+ 
+            
+
+    //     }
+    //     Object.keys(localPlayers['player'+playerTurn]['cards']).forEach((key)=>{
+    //         ['player1','player2','player3','player4'].forEach((player)=>{
+    //             localPlayers[player]['cards'][key].sort(function(a, b){return a - b})
+
+    //         })
+          
+    //     })
+   
+        // setHokm('D')
+        // setRuler(rulerplayer)
+
+
+        
+        
+        
+        
+
+       
+
+    },[hokm])
+
+    useDidMountEffect(()=>{
+        console.log(turn)
+        if(turn!==2){
+            const cardToPlay=aiMove(turn,players,notDroppedCards,carpetCards,firstDrop,hokm,suitsPlayersDontHave,turnCount)
+            setTimeout(() => {
+                playerPlay(turn,cardToPlay.suit,cardToPlay.cardIndex)   
+            }, 1000);
+
+
+        }
+
+        
+
+    },[turnCount,turn])
+    useDidMountEffect(()=>{
+       
+
+        // let roundCount=0
+        
+        // carpetCards.forEach((card)=>{
+            
+        //     if(card!==false){
+                
+        //         roundCount+=1
+        //     }
+
+
+            
+            
+
+        // })
+        const carpetpoints= getCarpetCardPoints(carpetCards,firstDrop,hokm)
+        const wonPlayer=carpetpoints.indexOf(maxPoint)+1
+        // need test
+        if(lastPlay.suit!==firstDrop.suit){
+            setSuitsPlayersDontHave((prevValue)=>{
+                prevValue['player'+wonPlayer].push(firstDrop.suit)
+                return prevValue
+                
+            })
+            
+        }
+        if(turnCount===1){
+            setTurnCount(turnCount+1)
+       
+            
+            setFirstDrop({player:turn,card:{cardIndex:lastPlay.cardIndex,suit:lastPlay.suit}})
+
+        }
+   
+        if(turnCount===4){ 
+                setTimeout(() => {
+                   
+
+                    const maxPoint=Math.max(...carpetpoints)
+                
+        
+       
+                    let localPlayers=JSON.parse(JSON.stringify(players))
+            
+        
+            
+                
+                    localPlayers['player'+wonPlayer]['stackWins']+=1
+                    localPlayers['player'+localPlayers['player'+wonPlayer]['teamMate']]['stackWins']+=1               
+                
+                
+                    console.log(turn)
+                    console.log(wonPlayer)
+                    setTurn(wonPlayer)
+                    setTurnCount(1)
+                    setNotDroppedCards((notDropped)=>{
+                        let localnotDropped=JSON.parse(JSON.stringify(notDropped))
+                        for (const card of carpetCards) {
+                        
+                            localnotDropped[card.suit].splice( localnotDropped[card.suit].indexOf(card.cardIndex),1)            
+                        }
+                        console.log(localnotDropped)
+                
+                        return localnotDropped
+                        
+        
+                    })
+                    console.log(carpetCards)
+                    setCarpetCards([false,false,false,false])
+
+                    setFirstDrop({player:wonPlayer,card:null})
+                    setPlayers(localPlayers)
+                    if(localPlayers['player'+wonPlayer]['stackWins']===7){
+                        localPlayers['player'+wonPlayer]['winGameCount']+=1
+                        localPlayers['player'+localPlayers['player'+wonPlayer]['teamMate']]['winGameCount']+=1    
+                    }
+        
+                    if(localPlayers['player'+wonPlayer]['winGameCount']===7){
+                        alert('اتمام بازی')
+                        return
+                    }
+        
+                    
+                    
+                }, 1000);
+  
+       
+          
+    
+        
+      
+                
+     
+            
+
+        }
+        else{
+            setTurnCount(turnCount+1)
+            setTurn((turn%4)+1)
+       
+        }
+
+
+    },[lastPlay])
+    const hokmToPersion=()=>{
+        if(hokm==='S'){
+            return 'پیک'
+        }
+        else if(hokm==='C'){
+            return 'خاج'
+        }
+        else if(hokm==='H'){
+            return 'دل'
+        }
+        else if(hokm==='D'){
+            return 'خشت'
+        }
+
+        
+    }
+    const playerPlay=(player,suit,cardIndex)=>{
+      
+        let localPlayers=JSON.parse(JSON.stringify(players));
+        // let localNotDroppedCards=notDroppedCards
+        let localCarpetCards=[...carpetCards]
+        const card={suit:suit,cardIndex:cardIndex}
+        localCarpetCards[player-1]=card
+
+        
+        // localNotDroppedCards[suit].splice(localNotDroppedCards[suit].indexOf(cardIndex),1)
+        localPlayers['player'+player]['cards'][suit].splice(localPlayers['player'+player]['cards'][suit].indexOf(cardIndex),1)
+        setPlayers(localPlayers)
+
+        setCarpetCards(localCarpetCards)
+        setLastPlay({player:player,suit:suit,cardIndex:cardIndex})
+        return 
+  
+        
+
+    }
+    const DeckOfcards=({isPlayer,player,playerIndex})=>{
+
+        let count=player.cards['D'].length+player.cards['C'].length+player.cards['H'].length+player.cards['S'].length
+        const firstCount=count
+
+        return<> {Object.keys(player.cards).map((suit)=>{
+                     
+            return (player.cards[suit]?.map((card)=>{
+                count-=1
+    
+                return(
+                    <div onMouseDown={(e)=>{
+
+                        if(turn===playerIndex ){
+           
+                            playerPlay(playerIndex,suit ,card)
+                        }
+               
+                    }} role="button" style={{marginRight:'-50px',zIndex:count,transform:`rotate(${(count-(firstCount/2))*3}deg) translateY(${(count-(firstCount/2))**2}px)`}} className="  w-5r  ">
+                        <img className="w-100 border" src={isPlayer?'/backs/blue2.svg':('/fronts/'+suit+card+'.svg')}></img>
+    
+                    </div>
+    
+                    
+                )
+            }))
+    
+        }
+        )}</>
+        
+    }
+    const setPlayersCards=(cardsRemain)=>{
+        const rulerplayer=(Math.floor(Math.random() * (4) ) + 1)
+        let localCardDeck=JSON.parse(JSON.stringify(cardDeck))
+
+    
+
+        let localAvailableSuits=availableSuits
         
         let playerTurn=1
-        let localPlayers=players
-        for (let i=1;i<52;i++) {
-      
-            let randomSuit=availableSuits[Math.floor(Math.random() * (availableSuits.length) ) ]
-   
+    
+        let localPlayers=JSON.parse(JSON.stringify(players));
+
+        for (let i=1;i<=cardsRemain;i++) {
+       
+            let randomSuit=localAvailableSuits[Math.floor(Math.random() * (localAvailableSuits.length) ) ]
+           
   
             let chosenSuit=localCardDeck[randomSuit]
 
@@ -143,24 +457,17 @@ const AIGame=()=>{
      
             if(localCardDeck[randomSuit].length===0){
                 
-                availableSuits.splice(availableSuits.indexOf(randomSuit),1)
+                localAvailableSuits.splice(localAvailableSuits.indexOf(randomSuit),1)
             }
             if(playerTurn===4){
                 playerTurn=1
+        
                 
             }
             else{
                 playerTurn+=1
            
             }
-
-
-          
-           
-
-            
- 
-            
 
         }
         Object.keys(localPlayers['player'+playerTurn]['cards']).forEach((key)=>{
@@ -169,67 +476,40 @@ const AIGame=()=>{
 
             })
           
-        })
-        console.log(localPlayers)
-        setHokm('D')
-        setRuler(rulerplayer)
-        setNotDroppedCards(cardDeck)
-        setTurn(1)
-        setPlayers(players)
-        
-        
-        
-        
-
-       
-
-    },[])
-    useEffect(()=>{
-        
-
-    },[turn])
-    const playerPlay=(player,suit,card)=>{
-        let localPlayers=players
-        let localNotDroppedCards=notDroppedCards
-        let localCarpetCards=carpetCards
-        localCarpetCards[player%4]=suit+card
-        localNotDroppedCards[suit].splice(localNotDroppedCards[suit].indexOf(card),1)
-        localPlayers['player'+player]['cards'][suit].splice(localPlayers['player'+player]['cards'][suit].indexOf(card),1)
+        })  
         setPlayers(localPlayers)
-        setNotDroppedCards(localNotDroppedCards)
-        
-
-    }
-    const deckOfcards=(isPlayer,player)=>{
-        let count=13
-        return Object.keys(player.cards).map((suit)=>{
-                     
-            return (player.cards[suit]?.map((card)=>{
-                count-=1
-    
-                return(
-                    <div onClick={()=>{
-                        if(turn===1){
-                            playerPlay(1,suit ,card)
-                        }
-                    }} role="button" style={{marginRight:'-50px',zIndex:count}} className="  w-5r  ">
-                        <img className="w-100 border" src={isPlayer?'/backs/blue2.svg':('/fronts/'+suit+card+'.svg')}></img>
-    
-                    </div>
-    
-                    
-                )
-            }))
-    
-        })
+        setCardDeck(localCardDeck)
         
     }
     return(
-        <div  className=" h-100vh  d-flex flex-column justify-content-between position-relaive">
+        <div  className=" h-100vh  d-flex flex-column justify-content-between position-relaive overflow-hidden">
+            <div className={"d-flex align-items-center position-absolute w-100 d-flex justify-content-center h-100 align-items-center z-index-10  "+(turn.length===0?'':'d-none')}>
+                <div className="w-25 row">
+                    <div onClick={()=>setHokm('C')} role="button" className=" col-3 ">
+                        <img className="w-100" src="club.svg"></img>
+                    </div>
+                    <div onClick={()=>setHokm('H')} role="button" className=" col-3">
+                        <img className="w-100" src="heart.svg"></img>
+                    </div>
+                    <div onClick={()=>setHokm('S')} role="button"  className=" col-3">
+                        <img className="w-100" src="spade.svg"></img>
+                    </div>
+
+                    <div onClick={()=>setHokm('D')} role="button" className=" col-3">
+                        <img className="w-100" src="diamond.svg"></img>
+                    </div>
+    
+
+
+                </div>
+
+     
+            </div>
             <img className="position-absolute top-0 w-100 h-100 z-index--1" src='/IMG_20240329_170516_335.jpg'></img>
             <div className="h-25 d-flex justify-content-center align-items-center">
                 <div dir="rtl" className="d-flex position-relative ">
-                    {deckOfcards(true,players.player3)}
+                    {/* {DeckOfcards(true,players.player3)} */}
+                    {<DeckOfcards isPlayer={true} player={players.player4} playerIndex={4}/>}
 
                     {/* <div style={{marginRight:'-50px',zIndex:12}} className=" w-5r  ">
                         <img className="w-100" src={image2}></img>
@@ -241,11 +521,13 @@ const AIGame=()=>{
 
 
             </div>
-            <div className="flex-grow-1 d-flex justify-content-between">
+            <div className="flex-grow-1 d-flex justify-content-between overflow-hidden ">
                  <div className="d-flex align-items-center">
                       <div dir="rtl" className="d-flex rotate-90">
 
-                            {deckOfcards(true,players.player4)}
+                  
+                            {<DeckOfcards isPlayer={true} player={players.player1} playerIndex={1}/>}
+                           
                             {/* <div style={{zIndex:13}} className="  w-5r ">
                                 <img className="w-100  " src={image2}></img>
 
@@ -271,29 +553,29 @@ const AIGame=()=>{
                             <img className="w-100" src={'/fronts/C1.svg'}></img>
 
                         </div> */}
-                        <div  className={"w-5r  "+(carpetCards[3]?'':'d-none')}>
+                        <div  className={"w-5r  "+(carpetCards[3]?'':'opacity-0')}>
                        
-                            <img className="w-100  " src={'/fronts/'+carpetCards[3]+'.svg'}></img>
+                            <img className="w-100  " src={'/fronts/'+(carpetCards[3]['suit']+carpetCards[3]['cardIndex'])+'.svg'}></img>
 
                         </div>
 
                     </div>
-                    <div className="d-flex justify-content-between justify-content-center w-15r">
-                        <div  className={"w-5r  "+(carpetCards[2]?'':'d-none')}>
+                    <div className="d-flex justify-content-between  w-15r">
+                        <div  className={"w-5r  "+(carpetCards[0]?'':'opacity-0')}>
                        
-                            <img className="w-100 rotate-90  " src={'/fronts/'+carpetCards[2]+'.svg'}></img>
+                            <img className="w-100 rotate-90  " src={'/fronts/'+(carpetCards[0]['suit']+carpetCards[0]['cardIndex'])+'.svg'}></img>
 
                         </div>
-                        <div  className={"w-5r  "+(carpetCards[0]?'':'d-none')}>
+                        <div  className={"w-5r  "+(carpetCards[2]?'':'opacity-0')}>
                        
-                            <img className="w-100 rotate-90  " src={'/fronts/'+carpetCards[0]+'.svg'}></img>
+                            <img className="w-100 rotate-90  " src={'/fronts/'+(carpetCards[2]['suit']+carpetCards[2]['cardIndex'])+'.svg'}></img>
 
                         </div>
 
                     </div>
                     <div className="d-flex justify-content-center">
-                        <div className={"w-5r  "+(carpetCards[1]?'':'d-none')}>
-                            <img className="w-100 " src={'/fronts/'+carpetCards[1]+'.svg'}></img>
+                        <div className={"w-5r  "+(carpetCards[1]?'':'opacity-0')}>
+                            <img className="w-100 " src={'/fronts/'+(carpetCards[1]['suit']+carpetCards[1]['cardIndex'])+'.svg'}></img>
 
                         </div>
 
@@ -302,7 +584,8 @@ const AIGame=()=>{
                 </div>
                 <div className="d-flex align-items-center">
                         <div dir="rtl" className="d-flex rotate-90">
-                            {deckOfcards(true,players.player2)}
+                         
+                            {<DeckOfcards isPlayer={true} player={players.player3} playerIndex={3}/>}
                         
                             {/* <div style={{zIndex:13}} className="  w-5r ">
                                 <img className="w-100  " src={image2}></img>
@@ -327,10 +610,31 @@ const AIGame=()=>{
                 </div>
                 
             </div>
+            <div className="position-absolute d-flex flex-column">
+                <div className="d-flex">
+                    <h3>حکم:</h3>  <h3 className="">{hokmToPersion()}</h3>
+
+                </div>
+                <div className="d-flex">
+                    <h3>امتیاز شما:</h3>  <h3 className="">{players['player2'].stackWins}</h3>
+                    
+                </div>     
+                <div className="d-flex">
+                    <h3>امتیاز حریف:</h3>  <h3 className="">{players['player1'].stackWins}</h3>
+                    
+                </div>             
+
+
+              
+            
+
+            </div>
             <div className="h-25 d-flex justify-content-center align-items-center">
+                            
                 <div dir="rtl" className="d-flex position-relative ">
 
-                    {deckOfcards(false,players.player1)}
+                   
+                    {<DeckOfcards isPlayer={false} player={players.player2} playerIndex={2}/>}
                     {/* <div style={{zIndex:13}} className="  w-5r ">
                         <img className="w-100" src={image}></img>
 
