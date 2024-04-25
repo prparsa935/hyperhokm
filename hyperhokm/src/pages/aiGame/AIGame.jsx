@@ -242,7 +242,7 @@ const AIGame=()=>{
     },[hokm])
 
     useDidMountEffect(()=>{
-        console.log(turn)
+        
         if(turn!==2){
             const cardToPlay=aiMove(turn,players,notDroppedCards,carpetCards,firstDrop,hokm,suitsPlayersDontHave,turnCount)
             setTimeout(() => {
@@ -272,30 +272,39 @@ const AIGame=()=>{
             
 
         // })
-        const carpetpoints= getCarpetCardPoints(carpetCards,firstDrop,hokm)
-        const wonPlayer=carpetpoints.indexOf(maxPoint)+1
-        // need test
-        if(lastPlay.suit!==firstDrop.suit){
+
+        let localfirstDrop=JSON.parse(JSON.stringify(firstDrop))
+        if(turnCount===1){
+            setTurnCount(turnCount+1)
+            
+            
+            setFirstDrop({player:turn,card:{cardIndex:lastPlay.cardIndex,suit:lastPlay.suit}})
+            localfirstDrop={player:turn,card:{cardIndex:lastPlay.cardIndex,suit:lastPlay.suit}}
+        }
+        console.log(lastPlay.suit)
+        console.log(localfirstDrop.card.suit)
+        if(lastPlay.suit!==localfirstDrop.card.suit){
             setSuitsPlayersDontHave((prevValue)=>{
-                prevValue['player'+wonPlayer].push(firstDrop.suit)
+              
+                prevValue[turn-1].push(localfirstDrop.card.suit)
+                console.log(prevValue)
                 return prevValue
                 
             })
             
         }
-        if(turnCount===1){
-            setTurnCount(turnCount+1)
-       
-            
-            setFirstDrop({player:turn,card:{cardIndex:lastPlay.cardIndex,suit:lastPlay.suit}})
-
-        }
    
         if(turnCount===4){ 
                 setTimeout(() => {
                    
+                    const carpetpoints= getCarpetCardPoints(carpetCards,firstDrop,hokm)
+                    
+                    // need test
+       
+                 
 
                     const maxPoint=Math.max(...carpetpoints)
+                    const wonPlayer=carpetpoints.indexOf(maxPoint)+1
                 
         
        
@@ -307,9 +316,7 @@ const AIGame=()=>{
                     localPlayers['player'+wonPlayer]['stackWins']+=1
                     localPlayers['player'+localPlayers['player'+wonPlayer]['teamMate']]['stackWins']+=1               
                 
-                
-                    console.log(turn)
-                    console.log(wonPlayer)
+           
                     setTurn(wonPlayer)
                     setTurnCount(1)
                     setNotDroppedCards((notDropped)=>{
@@ -318,13 +325,13 @@ const AIGame=()=>{
                         
                             localnotDropped[card.suit].splice( localnotDropped[card.suit].indexOf(card.cardIndex),1)            
                         }
-                        console.log(localnotDropped)
+                
                 
                         return localnotDropped
                         
         
                     })
-                    console.log(carpetCards)
+                 
                     setCarpetCards([false,false,false,false])
 
                     setFirstDrop({player:wonPlayer,card:null})

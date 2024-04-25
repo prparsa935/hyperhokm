@@ -14,8 +14,7 @@ const aiMove=(turn,players,notDroppedCards,carpetCards,firstDrop,hokm,suitsPlaye
        
         let minSuit={count:14}
         for (const suit of Object.keys(turnPlayerCards)) {
-            console.log('heloooooooooooooooooooo')
-            console.log(suit)
+
             const cardsInSuit=turnPlayerCards[suit]
             if(cardsInSuit.length!==0){
                
@@ -28,9 +27,9 @@ const aiMove=(turn,players,notDroppedCards,carpetCards,firstDrop,hokm,suitsPlaye
                 const highestCardInSuit=cardsInSuit[cardsInSuit.length-1]
     
                 if(isHighestNotDroppedCard(notDroppedCards[suit],{cardIndex:highestCardInSuit})){
-                    console.log('helllo')
+               
                     if(doesRemainEnemiesHaveCarpetSuit(suit,turnPlayer.enemies,carpetCards,suitsPlayersDontHave)){
-                        console.log({cardIndex:highestCardInSuit,suit:suit})
+
                         return {cardIndex:highestCardInSuit,suit:suit}
                         
                     }
@@ -43,7 +42,7 @@ const aiMove=(turn,players,notDroppedCards,carpetCards,firstDrop,hokm,suitsPlaye
             
             
         }
-        console.log({cardIndex:turnPlayerCards[minSuit.suit][0],suit:minSuit.suit})
+
         return {cardIndex:turnPlayerCards[minSuit.suit][0],suit:minSuit.suit}
         
         // const mincountSuitCards= turnPlayerCards.reduce((prev,curr)=>{
@@ -284,7 +283,7 @@ const selectHighestValueCard=(cardList)=>{
 }
 // test 2
 const isHighestNotDroppedCard=(notDroppedFromSuit,card)=>{
-  
+    // minus turnplayer cards
     return notDroppedFromSuit[notDroppedFromSuit.length-1]===card.cardIndex
      
     
@@ -323,15 +322,16 @@ const doesThisCardPlayedForWin=(card,carpetCards,notDropped,hokm,suitsPlayersDon
     if(!isCarpetwinner){
         return false
     }
-    if(!isTeamMateCard&&turnCount===4){
+    if(!isTeamMateCard&&isTeamMateCard===4){
         // need test
+        console.log(isTeamMateCard)
         return true
     }
 
     // my cards must add to not dropped its not cheat whink about that
   
     const isHighestNotDropped=isHighestNotDroppedCard(notDropped[card.suit],card)
-    console.log('highest not dropped  '+isHighestNotDropped)
+
     const enemies=turnPlayer.enemies
     // if(hokm===card.suit){
     //     return doesRemainEnemiesHaveCarpetSuit(carpetSuit,enemies,suitsPlayersDontHave)
