@@ -168,6 +168,15 @@
 .p-r3r{
     right:3rem;
 }
+.p-ln4{
+    left: -4rem;
+
+}
+.p-ln8{
+    left: -8rem;
+
+}
+.p-
 
 .p-l0{
     left: 0;
@@ -471,9 +480,18 @@
 .transition-1000{
     transition: 1000ms;
 }
+.transition-500{
+    transition: 500ms;
+}
 /* transform */
 .rotate-90{
     transform: rotate(90deg);
+}
+.rotate-180{
+    transform: rotate(180deg);
+}
+.rotate-270{
+    transform: rotate(270deg);
 }
 
 /* font-size */
@@ -582,3 +600,33 @@ input[type=number] {
     background: var(--product-box-color);
 }
 
+.transform-top-card{
+
+    transform: translateY(-300px) scale(2);
+}
+.transform-bottom-card{
+
+    transform: translateY(1000px) scale(2);
+}
+.transform-left-card{
+
+    transform: translatex(-1000px) scale(4);
+}
+.transform-right-card{
+
+    transform: translatex(1000px) scale(2);
+}
+
+
+
+:root,
+html {
+    overflow: hidden;
+    position: absolute;
+    top:0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    max-width: 100vw;
+    max-height: 100vh;
+    }

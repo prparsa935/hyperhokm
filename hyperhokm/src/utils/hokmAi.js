@@ -13,13 +13,22 @@ const aiMove=(turn,players,notDroppedCards,carpetCards,firstDrop,hokm,suitsPlaye
     if(firstDrop['player']===turn){
        
         let minSuit={count:14}
+        let minSuitWithPb={count:14}
+
         for (const suit of Object.keys(turnPlayerCards)) {
 
             const cardsInSuit=turnPlayerCards[suit]
             if(cardsInSuit.length!==0){
                
-
-                if(minSuit.count>cardsInSuit.length&&suit!==hokm){
+                const remainEnemiesHaveCarpetSuit=doesRemainEnemiesHaveCarpetSuit(suit,turnPlayer.enemies,carpetCards,suitsPlayersDontHave)
+                if(!remainEnemiesHaveCarpetSuit){
+                    minSuitWithPb.count=cardsInSuit.length
+                    minSuitWithPb['suit']=suit
+                    continue
+                }
+                console.log(suit)
+                console.log()
+                if(minSuit.count>=cardsInSuit.length&&suit!==hokm){
                    
                     minSuit.count=cardsInSuit.length
                     minSuit['suit']=suit
@@ -27,30 +36,24 @@ const aiMove=(turn,players,notDroppedCards,carpetCards,firstDrop,hokm,suitsPlaye
                 const highestCardInSuit=cardsInSuit[cardsInSuit.length-1]
     
                 if(isHighestNotDroppedCard(notDroppedCards[suit],{cardIndex:highestCardInSuit})){
-               
-                    if(doesRemainEnemiesHaveCarpetSuit(suit,turnPlayer.enemies,carpetCards,suitsPlayersDontHave)){
 
                         return {cardIndex:highestCardInSuit,suit:suit}
-                        
-                    }
-                    
+      
                 }
 
             }
-
-
-            
+ 
             
         }
-
+    
+        if(minSuit.count===14){
+       
+            return {cardIndex:turnPlayerCards[minSuitWithPb.suit][0],suit:minSuitWithPb.suit}
+        }
+   
         return {cardIndex:turnPlayerCards[minSuit.suit][0],suit:minSuit.suit}
         
-        // const mincountSuitCards= turnPlayerCards.reduce((prev,curr)=>{
-        //     prev.length>curr.length
-        // })
-        // return {cardIndex:}
-        // setFirstDrop({player:turn,card:{cardIndex:choosenCard.cardIndex,suit:choosenCard.suit}})
-        
+
 
     }
     // agar shoro konande shoma nisti
@@ -88,78 +91,10 @@ const aiMove=(turn,players,notDroppedCards,carpetCards,firstDrop,hokm,suitsPlaye
 
 
         }
-        // const yourTeamMateCardPoint=carpetpoints[turnPlayer['teamMate']-1]
-       
-
-        // const maxNotDroppedSuit=Math.max(notDroppedCards[firstDropedSuit])
-        // const carpetpoints=getCarpetCardPoints(carpetCards,firstDrop,hokm)
-        // const highestCarpetCardPoint= Math.max(...carpetpoints)
-        // // AGAR YARET SARE
-        // if(highestCarpetCardPoint===yourTeamMateCardPoint){
-        //     choosenCard=selectLowestValueCard(allowedCards)
-            
-            
-
-        // }
-        // // AGAR YARET SAR NABOOD
-        // else{
-            
-            
-            
-            
-
-        // }
-        
-
-
-
-
-
-        // const yourSuitList=turnPlayerCards[firstDropedSuit]
-        // const minSuitcard=Math.min(yourSuitList)
-        // const maxSuitCard=Math.max(yourSuitList)
-        // const minSuitYH=Math.min(turnPlayer['cards'][firstDropedSuit])
-        // agar khale roo zamino dari
-        // if(yourSuitList.length!==0){
-        //     // agar bozorg tarin khale zamino yaret endakhte bood
-        //     if(yourTeamMateCardPoint===highestCarpetCardPoint){
-        //         choosenCard={cardIndex:minSuitYH,suit:firstDropedSuit}
-                 
-        //     }
-    
-
-        // }
-        // // agar khale roo zamino nadari
-        // else{
-
-
-        // }
-        
-        
-        // for (const suit of Object.keys(turnPlayerCards)){
-        //     (suit.length===)
-            
-            
-        // }
-        // susssssss !!!!!!!!!!
-
 
     }
     
-    // let newNotDroppedCards=JSON.parse(JSON.stringify(notDroppedCards))
-    // let newCarpetCards=JSON.parse(JSON.stringify(notDroppedCards))
-    // newNotDroppedCards[choosenCard.suit].splice(choosenCard.cardIndex-1,1)  
-    // newCarpetCards[turn-1]=choosenCard
-    // setNotDropedCards(newNotDroppedCards)
-    // setLastPlay({player:turnPlayer,suit:choosenCard.suit,cardIndex:choosenCard.cardIndex})
-    // setCarpetCards(newCarpetCards)
-    // setPlayers((players)=>{
-    //     players['player'+turn]=turnPlayer
-    //     return players
 
-    // })
-    
-    
     
 
 }
@@ -322,9 +257,10 @@ const doesThisCardPlayedForWin=(card,carpetCards,notDropped,hokm,suitsPlayersDon
     if(!isCarpetwinner){
         return false
     }
-    if(!isTeamMateCard&&isTeamMateCard===4){
+
+    if(turnCount===4){
         // need test
-        console.log(isTeamMateCard)
+   
         return true
     }
 
@@ -333,21 +269,13 @@ const doesThisCardPlayedForWin=(card,carpetCards,notDropped,hokm,suitsPlayersDon
     const isHighestNotDropped=isHighestNotDroppedCard(notDropped[card.suit],card)
 
     const enemies=turnPlayer.enemies
-    // if(hokm===card.suit){
-    //     return doesRemainEnemiesHaveCarpetSuit(carpetSuit,enemies,suitsPlayersDontHave)
-        
-    // }
+
     if(isHighestNotDropped||hokm===card.suit){  
         return doesRemainEnemiesHaveCarpetSuit(carpetSuit,enemies,suitsPlayersDontHave)
     
     }
     else{
-        // for (const enemy of enemies) {
-        //     if(carpetCards[enemy-1]===false){
 
-        //     }
-            
-        // }
         return false
     }
 
